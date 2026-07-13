@@ -150,16 +150,16 @@ export default function EditProductPage() {
           <div>
             <label className="block text-sm font-medium mb-3">Sizes (click to select multiple)</label>
             <div className="flex flex-wrap gap-2">
-              {["6", "7", "8", "9", "10", "11", "12", "13"].map((size) => {
-                const selected = form.sizes.split(",").map(s => s.trim()).includes(size);
+              {["6", "7", "8", "9", "10", "11", "12", "13"].map((size: string) => {
+                const selected = form.sizes.split(",").map((s: string) => s.trim()).includes(size);
                 return (
                   <button
                     key={size}
                     type="button"
                     onClick={() => {
-                      const current = form.sizes.split(",").map(s => s.trim()).filter(Boolean);
+                      const current = form.sizes.split(",").map((s: string) => s.trim()).filter(Boolean);
                       const updated = selected
-                        ? current.filter(s => s !== size)
+                        ? current.filter((s: string) => s !== size)
                         : [...current, size];
                       setForm({ ...form, sizes: updated.join(", ") });
                     }}
@@ -179,16 +179,16 @@ export default function EditProductPage() {
           <div>
             <label className="block text-sm font-medium mb-3">Colors (click to select multiple)</label>
             <div className="flex flex-wrap gap-2">
-              {["Black", "White", "Brown", "Blue", "Red", "Green", "Gray", "Navy", "Beige", "Pink"].map((color) => {
-                const selected = form.colors.split(",").map(c => c.trim()).includes(color);
+              {["Black", "White", "Brown", "Blue", "Red", "Green", "Gray", "Navy", "Beige", "Pink"].map((color: string) => {
+                const selected = form.colors.split(",").map((c: string) => c.trim()).includes(color);
                 return (
                   <button
                     key={color}
                     type="button"
                     onClick={() => {
-                      const current = form.colors.split(",").map(c => c.trim()).filter(Boolean);
+                      const current = form.colors.split(",").map((c: string) => c.trim()).filter(Boolean);
                       const updated = selected
-                        ? current.filter(c => c !== color)
+                        ? current.filter((c: string) => c !== color)
                         : [...current, color];
                       setForm({ ...form, colors: updated.join(", ") });
                     }}
