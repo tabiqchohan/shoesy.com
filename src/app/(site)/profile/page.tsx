@@ -58,6 +58,14 @@ export default function ProfilePage() {
             <h2 className="text-lg font-semibold text-center">{session.user?.name}</h2>
             <p className="text-sm text-gray-500 text-center">{session.user?.email}</p>
             <p className="text-xs text-gray-400 text-center mt-1 capitalize">{(session.user as any)?.role || "customer"}</p>
+            {(session.user as any)?.role === "admin" && (
+              <Link
+                href="/admin/dashboard"
+                className="mt-4 block w-full px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition text-center"
+              >
+                Admin Panel
+              </Link>
+            )}
           </div>
         </div>
 

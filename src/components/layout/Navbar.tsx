@@ -47,9 +47,17 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-2xl lg:text-3xl font-bold tracking-tight text-gray-900"
+            className="flex items-center gap-2"
           >
-            {SITE_NAME}
+            <svg className="w-7 h-7 lg:w-8 lg:h-8" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="64" height="64" rx="8" fill="#111827"/>
+              <path d="M18 38c-4-2-8-1-12 1-2 1-4 3-5 5l-3 5c-1 1 0 3 1 3h18c2 0 4-2 4-4v-7c0-2-1-3-3-3z" fill="white"/>
+              <path d="M12 30c-3 0-5 1-7 2-2 2-4 4-4 7 0 2 1 3 2 4l3-6c1-2 3-3 5-3l3 1-2-5z" fill="white" opacity="0.8"/>
+              <rect x="6" y="41" width="24" height="5" rx="2" fill="white"/>
+              <circle cx="10" cy="46" r="2" fill="#374151"/>
+              <circle cx="22" cy="46" r="2" fill="#374151"/>
+            </svg>
+            <span className="text-xl lg:text-2xl font-bold tracking-tight text-gray-900">{SITE_NAME}</span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -19,6 +19,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Shoesy - Premium Footwear Store",
   description: "Shop the latest collection of shoes for men, women, and kids. Cash on delivery available.",
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
+  openGraph: {
+    title: "Shoesy - Premium Footwear Store",
+    description: "Shop the latest collection of shoes for men, women, and kids. Cash on delivery available.",
+    type: "website",
+    siteName: "Shoesy",
+  },
 };
 
 export default function RootLayout({

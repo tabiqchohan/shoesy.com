@@ -11,6 +11,7 @@ const sidebarLinks = [
   { label: "Customers", href: "/admin/customers", icon: "👥" },
   { label: "Messages", href: "/admin/messages", icon: "💬" },
   { label: "Subscribers", href: "/admin/subscribers", icon: "📧" },
+  { label: "Admins", href: "/admin/admins", icon: "👤" },
   { label: "Bulk Import", href: "/admin/bulk-import", icon: "📥" },
   { label: "Settings", href: "/admin/settings", icon: "⚙️" },
 ];
