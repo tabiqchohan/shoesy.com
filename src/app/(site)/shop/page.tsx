@@ -2,28 +2,73 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import Pagination from "@/components/ui/Pagination";
 import ProductGrid from "@/components/product/ProductGrid";
 import ProductFilters from "@/components/product/ProductFilters";
+import prisma from "@/lib/prisma";
 import type { ProductType } from "@/types";
 
 async function getProducts(searchParams: {
   [key: string]: string | string[] | undefined;
 }): Promise<{ products: ProductType[]; totalPages: number }> {
   try {
-    const params = new URLSearchParams();
-    if (searchParams.category) params.set("category", searchParams.category as string);
-    if (searchParams.q) params.set("q", searchParams.q as string);
-    if (searchParams.sort) params.set("sort", searchParams.sort as string);
-    if (searchParams.page) params.set("page", searchParams.page as string);
-    if (searchParams.minPrice) params.set("minPrice", searchParams.minPrice as string);
-    if (searchParams.maxPrice) params.set("maxPrice", searchParams.maxPrice as string);
-    if (searchParams.size) params.set("size", searchParams.size as string);
-    if (searchParams.color) params.set("color", searchParams.color as string);
+    const category = searchParams.category as string | undefined;
+    const q = searchParams.q as string | undefined;
+    const sort = (searchParams.sort as string) || "newest";
+    const page = parseInt((searchParams.page as string) || "1");
+    const limit = 12;
+    const minPrice = searchParams.minPrice as string | undefined;
+    const maxPrice = searchParams.maxPrice as string | undefined;
+    const size = searchParams.size as string | undefined;
+    const color = searchParams.color as string | undefined;
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/products?${params.toString()}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return { products: [], totalPages: 0 };
-    return res.json();
+    const where: any = {};
+
+    if (category) {
+      where.category = { slug: category };
+    }
+
+    if (q) {
+      where.OR = [
+        { name: { contains: q, mode: "insensitive" } },
+        { description: { contains: q, mode: "insensitive" } },
+      ];
+    }
+
+    if (minPrice || maxPrice) {
+      where.price = {};
+      if (minPrice) where.price.gte = parseFloat(minPrice);
+      if (maxPrice) where.price.lte = parseFloat(maxPrice);
+    }
+
+    if (size) {
+      where.sizes = { has: size };
+    }
+
+    if (color) {
+      where.colors = { has: color };
+    }
+
+    let orderBy: any = { createdAt: "desc" };
+    if (sort === "price_asc") orderBy = { price: "asc" };
+    if (sort === "price_desc") orderBy = { price: "desc" };
+    if (sort === "name") orderBy = { name: "asc" };
+
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          category: { select: { name: true, slug: true } },
+          reviews: { select: { rating: true } },
+        },
+      }),
+      prisma.product.count({ where }),
+    ]);
+
+    return {
+      products: products as unknown as ProductType[],
+      totalPages: Math.ceil(total / limit),
+    };
   } catch {
     return { products: [], totalPages: 0 };
   }

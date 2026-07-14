@@ -1,16 +1,19 @@
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import ProductDetailContent from "./ProductDetailContent";
 import RelatedProducts from "@/components/product/RelatedProducts";
+import prisma from "@/lib/prisma";
 import type { ProductType } from "@/types";
 
 async function getProduct(slug: string): Promise<ProductType | null> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/products/${slug}`, {
-      cache: "no-store",
+    const product = await prisma.product.findFirst({
+      where: { OR: [{ slug }, { id: slug }] },
+      include: {
+        category: { select: { name: true, slug: true } },
+        reviews: { select: { rating: true, comment: true, createdAt: true, id: true } },
+      },
     });
-    if (!res.ok) return null;
-    return res.json();
+    return product as unknown as ProductType | null;
   } catch {
     return null;
   }

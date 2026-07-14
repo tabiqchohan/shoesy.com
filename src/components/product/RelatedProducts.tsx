@@ -1,22 +1,5 @@
+import prisma from "@/lib/prisma";
 import ProductGrid from "./ProductGrid";
-
-async function getRelatedProducts(
-  categoryId: string,
-  currentProductId: string
-) {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(
-      `${baseUrl}/api/products?category=${categoryId}&exclude=${currentProductId}&limit=4`,
-      { cache: "no-store" }
-    );
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.products || [];
-  } catch {
-    return [];
-  }
-}
 
 export default async function RelatedProducts({
   categoryId,
@@ -25,7 +8,19 @@ export default async function RelatedProducts({
   categoryId: string;
   currentProductId: string;
 }) {
-  const products = await getRelatedProducts(categoryId, currentProductId);
+  let products: any[] = [];
+
+  try {
+    products = await prisma.product.findMany({
+      where: { categoryId, id: { not: currentProductId } },
+      take: 4,
+      include: {
+        category: { select: { name: true, slug: true } },
+        reviews: { select: { rating: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch {}
 
   if (!products.length) return null;
 
