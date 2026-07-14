@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
 import type { ProductType } from "@/types";
+import WishlistButton from "./WishlistButton";
 
 export default function ProductCard({ product }: { product: ProductType }) {
   const avgRating = product.reviews?.length
@@ -35,6 +36,7 @@ export default function ProductCard({ product }: { product: ProductType }) {
             <span className="text-white font-semibold">Out of Stock</span>
           </div>
         )}
+        <WishlistButton productId={product.id} />
       </div>
       <div className="p-4">
         <p className="text-xs text-gray-500 uppercase mb-1">

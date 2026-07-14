@@ -4,6 +4,7 @@ import { useState } from "react";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import type { ProductType } from "@/types";
+import WishlistButton from "@/components/product/WishlistButton";
 
 export default function ProductDetailContent({
   product,
@@ -70,10 +71,15 @@ export default function ProductDetailContent({
       </div>
 
       <div>
-        <p className="text-sm text-gray-500 uppercase mb-2">
-          {product.category?.name}
-        </p>
-        <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-sm text-gray-500 uppercase mb-2">
+              {product.category?.name}
+            </p>
+            <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
+          </div>
+          <WishlistButton productId={product.id} />
+        </div>
 
         <div className="flex items-baseline gap-3 mb-6">
           {product.salePrice ? (

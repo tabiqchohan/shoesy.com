@@ -1,5 +1,6 @@
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import ProductDetailContent from "./ProductDetailContent";
+import ReviewSection from "./ReviewSection";
 import RelatedProducts from "@/components/product/RelatedProducts";
 import prisma from "@/lib/prisma";
 import type { ProductType } from "@/types";
@@ -10,7 +11,10 @@ async function getProduct(slug: string): Promise<ProductType | null> {
       where: { OR: [{ slug }, { id: slug }] },
       include: {
         category: { select: { name: true, slug: true } },
-        reviews: { select: { rating: true, comment: true, createdAt: true, id: true } },
+        reviews: {
+          select: { id: true, rating: true, comment: true, createdAt: true, user: { select: { name: true } } },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
     return product as unknown as ProductType | null;
@@ -44,6 +48,7 @@ export default async function ProductPage(props: {
         ]}
       />
       <ProductDetailContent product={product} />
+      <ReviewSection productId={product.id} initialReviews={product.reviews as any} />
       <RelatedProducts
         categoryId={product.categoryId}
         currentProductId={product.id}

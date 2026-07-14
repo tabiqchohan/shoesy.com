@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice, calculateDeliveryFee } from "@/lib/utils";
 import { FREE_SHIPPING_MIN } from "@/lib/constants";
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const { items, getSubtotal, clearCart } = useCartStore();
   const subtotal = getSubtotal();
   const deliveryFee = calculateDeliveryFee(subtotal);
@@ -24,6 +26,28 @@ export default function CheckoutPage() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  if (status === "loading") {
+    return <div className="max-w-3xl mx-auto px-4 py-20 text-center">Loading...</div>;
+  }
+
+  if (!session) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-20 text-center">
+        <h1 className="text-3xl font-bold mb-4">Login Required</h1>
+        <p className="text-gray-500 mb-8">Please sign in to proceed with your order.</p>
+        <Link
+          href={`/login?callbackUrl=${encodeURIComponent("/checkout")}`}
+          className="inline-block px-8 py-3 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition"
+        >
+          Sign In
+        </Link>
+        <p className="mt-4">
+          <Link href="/register" className="text-blue-600 hover:underline">Create an account</Link>
+        </p>
+      </div>
+    );
+  }
 
   if (!items.length) {
     return (

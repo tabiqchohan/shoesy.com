@@ -1,13 +1,18 @@
 import Link from "next/link";
+import prisma from "@/lib/prisma";
 
-const categories = [
-  { name: "Men", slug: "men", image: "/images/men.jpg", count: "120+" },
-  { name: "Women", slug: "women", image: "/images/women.jpg", count: "150+" },
-  { name: "Kids", slug: "kids", image: "/images/kids.jpg", count: "80+" },
-  { name: "Sports", slug: "sports", image: "/images/sports.jpg", count: "60+" },
-];
+export default async function CategoryGrid() {
+  const categories = await prisma.category.findMany({
+    include: {
+      products: {
+        take: 1,
+        select: { images: true },
+        orderBy: { createdAt: "desc" },
+      },
+      _count: { select: { products: true } },
+    },
+  });
 
-export default function CategoryGrid() {
   return (
     <section className="py-16">
       <div className="max-w-7xl mx-auto px-4">
@@ -19,10 +24,17 @@ export default function CategoryGrid() {
               href={`/shop?category=${cat.slug}`}
               className="group relative h-64 rounded-xl overflow-hidden bg-gray-200"
             >
+              {cat.products[0]?.images[0] && (
+                <img
+                  src={cat.products[0].images[0]}
+                  alt={cat.name}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <h3 className="text-xl font-bold text-white">{cat.name}</h3>
-                <p className="text-sm text-gray-300">{cat.count} Products</p>
+                <p className="text-sm text-gray-300">{cat._count.products}+ Products</p>
               </div>
             </Link>
           ))}
