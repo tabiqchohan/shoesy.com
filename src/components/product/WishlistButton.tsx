@@ -33,7 +33,7 @@ export default function WishlistButton({ productId }: { productId: string }) {
     <button
       onClick={handleToggle}
       disabled={loading}
-      className="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition z-10"
+      className="absolute bottom-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition z-10"
       aria-label="Add to wishlist"
     >
       <svg className="w-5 h-5 text-gray-600 hover:text-red-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
