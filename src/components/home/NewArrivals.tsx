@@ -1,32 +1,32 @@
+import prisma from "@/lib/prisma";
 import ProductGrid from "@/components/product/ProductGrid";
 
-function getBaseUrl() {
-  return process.env.NEXT_PUBLIC_BASE_URL
-    || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
-    || "http://localhost:3000";
-}
-
 async function getProducts() {
-  const baseUrl = getBaseUrl();
-
   try {
-    const res = await fetch(`${baseUrl}/api/products/new-arrivals`, {
-      cache: "no-store",
+    const products = await prisma.product.findMany({
+      where: { isNew: true, stock: { gt: 0 } },
+      take: 8,
+      include: {
+        category: { select: { name: true, slug: true } },
+        reviews: { select: { rating: true } },
+      },
+      orderBy: { createdAt: "desc" },
     });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.length > 0) return data;
-    }
+
+    if (products.length > 0) return products;
   } catch {}
 
   try {
-    const res = await fetch(`${baseUrl}/api/products?sort=newest&limit=8`, {
-      cache: "no-store",
+    const products = await prisma.product.findMany({
+      take: 8,
+      orderBy: { createdAt: "desc" },
+      include: {
+        category: { select: { name: true, slug: true } },
+        reviews: { select: { rating: true } },
+      },
     });
-    if (res.ok) {
-      const data = await res.json();
-      return data.products || [];
-    }
+
+    return products;
   } catch {}
 
   return [];
