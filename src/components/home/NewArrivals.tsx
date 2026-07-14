@@ -1,8 +1,15 @@
 import ProductGrid from "@/components/product/ProductGrid";
 
+function getBaseUrl() {
+  return process.env.NEXT_PUBLIC_BASE_URL
+    || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
+    || "http://localhost:3000";
+}
+
 async function getProducts() {
+  const baseUrl = getBaseUrl();
+
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const res = await fetch(`${baseUrl}/api/products/new-arrivals`, {
       cache: "no-store",
     });
@@ -13,7 +20,6 @@ async function getProducts() {
   } catch {}
 
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const res = await fetch(`${baseUrl}/api/products?sort=newest&limit=8`, {
       cache: "no-store",
     });
