@@ -90,7 +90,7 @@ export default async function ShopPage(props: {
           {searchParams.q
             ? `Search: "${searchParams.q}"`
             : searchParams.category
-              ? `${searchParams.category.charAt(0).toUpperCase() + searchParams.category.slice(1)} Shoes`
+              ? `${String(searchParams.category).charAt(0).toUpperCase() + String(searchParams.category).slice(1)} Shoes`
               : "All Shoes"}
         </h1>
         <p className="section-subtitle mt-2">
