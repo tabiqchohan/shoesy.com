@@ -35,18 +35,18 @@ export default function ProductFilters({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h3 className="font-semibold mb-3">Categories</h3>
-        <div className="space-y-2">
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Categories</h3>
+        <div className="space-y-1">
           {categories.map((cat) => (
             <button
               key={cat.slug}
               onClick={() => updateFilter("category", cat.slug)}
               className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition ${
                 currentCategory === cat.slug
-                  ? "bg-gray-900 text-white"
-                  : "hover:bg-gray-100"
+                  ? "bg-gray-900 text-white font-medium"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
               {cat.name}
@@ -56,16 +56,16 @@ export default function ProductFilters({
       </div>
 
       <div>
-        <h3 className="font-semibold mb-3">Sort By</h3>
-        <div className="space-y-2">
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Sort By</h3>
+        <div className="space-y-1">
           {sortOptions.map((opt) => (
             <button
               key={opt.value}
               onClick={() => updateFilter("sort", opt.value)}
               className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition ${
-                searchParams.sort === opt.value
-                  ? "bg-gray-900 text-white"
-                  : "hover:bg-gray-100"
+                (searchParams.sort || "newest") === opt.value
+                  ? "bg-gray-900 text-white font-medium"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
               {opt.name}
@@ -75,16 +75,16 @@ export default function ProductFilters({
       </div>
 
       <div>
-        <h3 className="font-semibold mb-3">Size</h3>
-        <div className="grid grid-cols-3 gap-2">
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Size</h3>
+        <div className="flex flex-wrap gap-1.5">
           {SHOE_SIZES.map((size) => (
             <button
               key={size}
               onClick={() => updateFilter("size", size)}
-              className={`px-3 py-2 text-sm border rounded-lg transition ${
+              className={`w-10 h-10 text-sm font-medium rounded-lg border transition ${
                 searchParams.size === size
                   ? "bg-gray-900 text-white border-gray-900"
-                  : "hover:border-gray-900"
+                  : "text-gray-600 border-gray-200 hover:border-gray-900 hover:text-gray-900"
               }`}
             >
               {size}

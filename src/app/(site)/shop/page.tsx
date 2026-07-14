@@ -85,14 +85,19 @@ export default async function ShopPage(props: {
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Breadcrumbs items={[{ label: "Shop" }]} />
 
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">
+      <div className="mb-10">
+        <h1 className="section-title">
           {searchParams.q
             ? `Search: "${searchParams.q}"`
             : searchParams.category
-              ? `${searchParams.category} Shoes`
+              ? `${searchParams.category.charAt(0).toUpperCase() + searchParams.category.slice(1)} Shoes`
               : "All Shoes"}
         </h1>
+        <p className="section-subtitle mt-2">
+          {searchParams.q
+            ? `Results for "${searchParams.q}"`
+            : "Discover premium footwear crafted for style and comfort"}
+        </p>
       </div>
 
       <div className="flex gap-8">

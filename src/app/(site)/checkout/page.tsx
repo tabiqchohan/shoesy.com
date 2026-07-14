@@ -110,100 +110,108 @@ export default function CheckoutPage() {
       <div className="grid lg:grid-cols-5 gap-8">
         <form
           onSubmit={handleSubmit}
-          className="lg:col-span-3 space-y-4"
+          className="lg:col-span-3 space-y-5"
         >
-          <h2 className="font-bold text-lg">Delivery Details</h2>
+          <div>
+            <h2 className="text-lg font-semibold mb-1">Delivery Details</h2>
+            <p className="text-sm text-gray-500">Fill in your shipping information</p>
+          </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Full Name *</label>
+            <label className="block text-sm font-medium mb-1.5">Full Name *</label>
             <input
               type="text"
               required
               value={form.customerName}
               onChange={(e) => updateField("customerName", e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg"
+              className="input-field"
               placeholder="John Doe"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Phone *</label>
+              <label className="block text-sm font-medium mb-1.5">Phone *</label>
               <input
                 type="tel"
                 required
                 value={form.phone}
                 onChange={(e) => updateField("phone", e.target.value)}
-                className="w-full px-4 py-2 border rounded-lg"
+                className="input-field"
                 placeholder="03XX-XXXXXXX"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">City *</label>
+              <label className="block text-sm font-medium mb-1.5">City *</label>
               <input
                 type="text"
                 required
                 value={form.city}
                 onChange={(e) => updateField("city", e.target.value)}
-                className="w-full px-4 py-2 border rounded-lg"
+                className="input-field"
                 placeholder="Karachi"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-1.5">
               Email (optional)
             </label>
             <input
               type="email"
               value={form.email}
               onChange={(e) => updateField("email", e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg"
+              className="input-field"
               placeholder="john@example.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-1.5">
               Full Address *
             </label>
             <textarea
               required
               value={form.address}
               onChange={(e) => updateField("address", e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg"
+              className="input-field"
               rows={2}
               placeholder="House #, Street, Area"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-1.5">
               Order Notes (optional)
             </label>
             <textarea
               value={form.notes}
               onChange={(e) => updateField("notes", e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg"
+              className="input-field"
               rows={2}
               placeholder="Any special instructions?"
             />
           </div>
 
           {error && (
-            <p className="text-red-500 text-sm">{error}</p>
+            <p className="text-red-500 text-sm flex items-center gap-1.5">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              {error}
+            </p>
           )}
 
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex items-start gap-2">
-              <svg className="w-5 h-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
               <div>
-                <p className="font-medium">Cash on Delivery</p>
-                <p className="text-sm text-gray-500">
-                  Pay when you receive your order
+                <p className="font-medium text-sm">Cash on Delivery</p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Pay when you receive your order — no advance payment needed
                 </p>
               </div>
             </div>
@@ -212,66 +220,71 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 disabled:bg-gray-400 transition"
+            className="w-full py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition text-sm"
           >
-            {submitting ? "Placing Order..." : "Place Order (Pay on Delivery)"}
+            {submitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Placing Order...
+              </span>
+            ) : "Place Order (Pay on Delivery)"}
           </button>
         </form>
 
         <div className="lg:col-span-2">
-          <div className="border rounded-xl p-6 sticky top-24">
-            <h2 className="font-bold text-lg mb-4">Order Summary</h2>
-            <div className="space-y-3 max-h-64 overflow-y-auto mb-4">
+          <div className="bg-white rounded-xl border border-gray-100 p-6 sticky top-24 shadow-sm">
+            <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+            <div className="space-y-3 max-h-72 overflow-y-auto mb-4 -mx-2 px-2">
               {items.map((item) => (
-                <div key={item.id} className="flex gap-3">
+                <div key={item.id} className="flex gap-3 p-2 rounded-lg hover:bg-gray-50 transition">
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="w-16 h-16 object-cover rounded-lg"
+                    className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                   />
-                  <div className="flex-1 text-sm">
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-gray-500">
-                      {item.size} × {item.quantity}
+                  <div className="flex-1 min-w-0 text-sm">
+                    <p className="font-medium text-gray-900 truncate">{item.name}</p>
+                    <p className="text-gray-500 text-xs mt-0.5">
+                      Size: {item.size}{item.color ? `, Color: ${item.color}` : ""}
                     </p>
-                    <p className="font-medium">
-                      {formatPrice(
-                        (item.salePrice || item.price) * item.quantity
-                      )}
+                    <p className="text-gray-500 text-xs">Qty: {item.quantity}</p>
+                    <p className="font-medium text-gray-900 mt-1">
+                      {formatPrice((item.salePrice || item.price) * item.quantity)}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="border-t pt-3 space-y-2 text-sm">
+            <div className="border-t border-gray-100 pt-4 space-y-2.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-500">Subtotal</span>
-                <span>{formatPrice(subtotal)}</span>
+                <span className="font-medium">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Delivery</span>
-                <span>
-                  {deliveryFee === 0 ? (
-                    <span className="text-green-600">Free</span>
-                  ) : (
-                    formatPrice(deliveryFee)
-                  )}
+                <span className={deliveryFee === 0 ? "text-emerald-600 font-medium" : "font-medium"}>
+                  {deliveryFee === 0 ? "Free" : formatPrice(deliveryFee)}
                 </span>
               </div>
               {deliveryFee > 0 && subtotal < FREE_SHIPPING_MIN && (
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   Add {formatPrice(FREE_SHIPPING_MIN - subtotal)} for free delivery
                 </p>
               )}
-              <div className="border-t pt-3 flex justify-between font-bold text-base">
+              <div className="border-t border-gray-100 pt-3 flex justify-between font-bold text-base">
                 <span>Total</span>
                 <span>{formatPrice(total)}</span>
               </div>
             </div>
 
-            <p className="text-xs text-gray-400 mt-4">
-              By placing this order, you agree to our terms and conditions.
+            <p className="text-xs text-gray-400 mt-4 text-center">
+              By placing this order, you agree to our{" "}
+              <a href="/terms" className="underline hover:text-gray-900">terms</a>.
             </p>
           </div>
         </div>
