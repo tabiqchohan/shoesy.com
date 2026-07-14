@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { useCartStore } from "@/store/cartStore";
 import { useUIStore } from "@/store/uiStore";
 import { SITE_NAME } from "@/lib/constants";
@@ -17,16 +18,22 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [catDropdownOpen, setCatDropdownOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const { data: session, status } = useSession();
   const itemCount = useCartStore((s) => s.getItemCount());
   const isMobileMenuOpen = useUIStore((s) => s.isMobileMenuOpen);
   const toggleMobileMenu = useUIStore((s) => s.toggleMobileMenu);
   const closeMobileMenu = useUIStore((s) => s.closeMobileMenu);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const catDropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (catDropdownRef.current && !catDropdownRef.current.contains(e.target as Node)) {
         setCatDropdownOpen(false);
+      }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node)) {
+        setUserDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -55,7 +62,7 @@ export default function Navbar() {
             </Link>
 
             {/* Categories Dropdown */}
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative" ref={catDropdownRef}>
               <button
                 onClick={() => setCatDropdownOpen(!catDropdownOpen)}
                 className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-gray-900 transition"
@@ -152,6 +159,60 @@ export default function Navbar() {
               )}
             </Link>
 
+            {/* Login / Profile */}
+            {status === "authenticated" ? (
+              <div className="relative" ref={userDropdownRef}>
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="p-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
+                  aria-label="Profile"
+                >
+                  <div className="w-5 h-5 bg-gray-900 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                    {session.user?.name?.charAt(0)?.toUpperCase() || "U"}
+                  </div>
+                </button>
+                {userDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border py-2 z-50">
+                    <div className="px-4 py-2 border-b">
+                      <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
+                      <p className="text-xs text-gray-500">{session.user?.email}</p>
+                    </div>
+                    <Link
+                      href="/profile"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                    >
+                      My Profile
+                    </Link>
+                    <Link
+                      href="/profile/orders"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                    >
+                      My Orders
+                    </Link>
+                    <div className="border-t mx-3 my-1" />
+                    <button
+                      onClick={() => signOut()}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="p-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
+                aria-label="Sign In"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </Link>
+            )}
+
             {/* Mobile menu toggle */}
             <button
               onClick={toggleMobileMenu}
@@ -227,6 +288,39 @@ export default function Navbar() {
             >
               Contact
             </Link>
+            <div className="border-t mx-4 my-2" />
+            {status === "authenticated" ? (
+              <>
+                <Link
+                  href="/profile"
+                  className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition"
+                  onClick={closeMobileMenu}
+                >
+                  My Profile
+                </Link>
+                <Link
+                  href="/profile/orders"
+                  className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition"
+                  onClick={closeMobileMenu}
+                >
+                  My Orders
+                </Link>
+                <button
+                  onClick={() => { signOut(); closeMobileMenu(); }}
+                  className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition"
+                onClick={closeMobileMenu}
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         )}
       </div>
